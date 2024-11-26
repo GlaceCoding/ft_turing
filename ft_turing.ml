@@ -2,6 +2,7 @@
 exception FileNotFound of string
 exception InvalidJson of string
 exception NullValue of string
+exception MatchFailure of string
 
 
 
@@ -31,12 +32,17 @@ let get_value_from_json json key =
 (* Fonction qui vérifie la valeur name dans le JSON *)
 let check_name json =
   match get_value_from_json json "name" with
-  | `String name -> Printf.printf "Name: %s\n" name
+  | `String name -> Printf.printf "***************************************************\n";
+  Printf.printf "*                                                 *\n";
+  Printf.printf "*                    %s                    *\n" name;
+  Printf.printf "*                                                 *\n";
+  Printf.printf "***************************************************\n";
   | _ -> raise (InvalidJson "Expected string for key 'name'")
 
 (* Fonction qui vérifie la valeur alphabet dans le JSON et que les caracteres de la liste
  d'argument soient dans la liste des caracteres du json *)
 let check_alphabet json argument =
+  Printf.printf "Alphabet: [";
   match get_value_from_json json "alphabet" with
   | `List alphabet ->
       let result = List.map (fun x ->
@@ -46,7 +52,7 @@ let check_alphabet json argument =
         | `String s -> Printf.printf "%s " s; s
         | _ -> raise (InvalidJson "Alphabet must be strings")
       ) alphabet in
-      Printf.printf "\n";
+      Printf.printf "]\n";
       List.iter (fun x ->
         if not (List.mem x result) then
           raise (InvalidJson ("Argument not in alphabet: " ^ x))
@@ -87,8 +93,9 @@ let check_blank json alphabet =
       if not (List.mem blank str_alphabet) then
         raise (InvalidJson ("Blank symbol must be in alphabet: " ^ blank))
       else (
-        Printf.printf "Blank: %s\n" blank;
-        find_index blank str_alphabet
+        (* Printf.printf "Blank: %s\n" blank; *)
+        (* find_index blank str_alphabet *)
+        blank
       )
   | `String blank ->
       raise (InvalidJson ("Blank symbol must be a single character: " ^ blank))
@@ -96,6 +103,7 @@ let check_blank json alphabet =
 
 (* Fonction qui vérifie la valeur states dans le JSON *)
 let check_states json =
+  Printf.printf "States: [";
   match get_value_from_json json "states" with
   | `List states ->
       let result = List.map (fun x ->
@@ -105,7 +113,7 @@ let check_states json =
             s
         | _ -> raise (InvalidJson "States must be strings")
       ) states in
-      Printf.printf "\n";
+      Printf.printf "]\n";
       result
   | _ -> raise (InvalidJson "Expected list for key 'states'")
 
@@ -116,7 +124,7 @@ let check_initial json states =
       if not (List.mem initial states) then
         raise (InvalidJson ("Initial state must be in states: " ^ initial))
       else (
-        Printf.printf "Initial state: %s\n" initial;
+        Printf.printf "Initial : %s\n" initial;
         initial
       )
   | _ -> raise (InvalidJson "Expected string for key 'initial'")
@@ -125,16 +133,18 @@ let check_initial json states =
 let check_final json states =
   match get_value_from_json json "finals" with
   | `List finals ->
-      List.iter (fun x ->
+      let result = List.map (fun x ->
         match x with
-        | `String s when List.mem s states -> Printf.printf "%s " s
+        | `String s when List.mem s states ->
+            Printf.printf "Finals : [ %s ]" s;
+            s  (* Retourne la string au lieu de la valeur Yojson *)
         | `String s ->
             raise (InvalidJson ("Finals state must be in states: " ^ s))
         | _ ->
             raise (InvalidJson "Finals states must be strings")
-      ) finals;
+      ) finals in
       Printf.printf "\n";
-      finals
+      result  (* Retourne une string list *)
   | _ -> raise (InvalidJson "Expected list for key 'finals'")
 
 type action = LEFT | RIGHT
@@ -149,12 +159,12 @@ type transition = {
 (* Fonction qui affiche les transitions *)
 let display_transtions transitions_map =
   List.iter (fun (state, transitions) ->
-    Printf.printf "State: %s\n" state;
     List.iter (fun transition ->
-      Printf.printf "  Read: %s\n" transition.read;
-      Printf.printf "  To state: %s\n" transition.to_state;
-      Printf.printf "  Write: %s\n" transition.write;
-      Printf.printf "  Action: %s\n" transition.action;
+      Printf.printf "(%s, " state;
+      Printf.printf "%s) -> " transition.read;
+      Printf.printf "(%s, " transition.to_state;
+      Printf.printf "%s, " transition.write;
+      Printf.printf " %s)\n" transition.action;
     ) transitions
   ) transitions_map
 
@@ -207,6 +217,7 @@ let check_transitions json alphabet states =
 
 (* Fonction qui aglomere toutes les fonctions de vérification *)
 let check_json json argument =
+  check_name json;
   let alphabet = check_alphabet json argument in
   let blank = check_blank json alphabet in
   let states = check_states json in
@@ -214,29 +225,87 @@ let check_json json argument =
   let finals = check_final json states in
   let transitions = check_transitions json alphabet states in
   display_transtions transitions;
-  Printf.printf "JSON is valid\n";
+  Printf.printf "***************************************************\n";
   (alphabet, blank, states, initial, finals, transitions)
 
-(* Fonction qui affiche l'instruction du caractere par rapport a l'etat actuel*)
 
+(* Fonction qui affiche le contenu de la bande *)
+let display_tape tape position =
+  let rec aux i =
+    if i < 0 then
+      Printf.printf "_"
+    else if i >= String.length tape then
+      Printf.printf "_"
+    else
+      Printf.printf "%c" tape.[i]
+    in
+    Printf.printf "[";
+    for i = 0 to String.length tape - 1 do
+      if i = position then
+      Printf.printf "<%c>" tape.[i]
+    else
+      Printf.printf " %c " tape.[i]
+  done;
+  Printf.printf "...............] "
+
+(* Fonction qui affiche les instructions *)
+let display_transtion state transition =
+  Printf.printf "(%s, " state;
+  Printf.printf "%s) -> " transition.read;
+  Printf.printf "(%s, " transition.to_state;
+  Printf.printf "%s, " transition.write;
+  Printf.printf " %s)\n" transition.action
+
+(* Fonction qui lance la machine de Turing *)
+let compute_turing_machine valid_setup argument =
+  let alphabet, blank, states, initial, finals, transitions = valid_setup in
+  let rec compute_turing_machine_aux tape state position =
+    if List.mem state finals then
+      Printf.printf "Final state reached: %s\n" state
+    else
+      let current_symbol = if position < 0 || position >= String.length tape then
+        blank
+      else
+        String.make 1 tape.[position]
+      in
+      try
+        let transition = List.find (fun (s, _) -> s = state) transitions in
+        let transition = List.find (fun t -> t.read = current_symbol) (snd transition) in
+      let new_tape = if position < 0 then
+        transition.write ^ tape
+      else if position >= String.length tape then
+        tape ^ transition.write
+      else
+        let left = String.sub tape 0 position in
+        let right = String.sub tape (position + 1) (String.length tape - position - 1) in
+        left ^ transition.write ^ right
+      in
+      let new_position = if transition.action = "LEFT" then
+        position - 1
+      else
+        position + 1
+      in
+      display_tape tape position;
+      display_transtion state transition;
+      compute_turing_machine_aux new_tape transition.to_state new_position
+    with
+    | Not_found ->
+      raise ( MatchFailure (Printf.sprintf "%s n'a pas d'instruction pour %s" state current_symbol) );
+  in
+  let tape = String.concat "" argument in
+  compute_turing_machine_aux tape initial 0
 
 (* Fonction principale *)
 let () =
   let filename = "data.json" in
-  (* split la chaine et transfome en liste *)
   try
     let argument = Str.split (Str.regexp "") Sys.argv.(1) in
     Printf.printf "Argument: %s\n" (String.concat "," argument);
     let json = read_json_file filename in
     let valid_setup = check_json json argument in
 
-    (* display_instructions valid_setup argument; *)
-    (* let instruction_list = map_instruction_list valid_setup argument in *)
-    (* Printf.printf "Contenu du fichier JSON: %s\n" (Yojson.Basic.to_string json); *)
+    compute_turing_machine valid_setup argument;
 
-    (* Extraction d'une valeur spécifique *)
-    let value = get_value_from_json json "alphabet" in
-    Printf.printf "Valeur pour 'alphabet': %s\n" (Yojson.Basic.to_string value)
   with
   | FileNotFound msg -> Printf.printf "Erreur: %s\n" msg
   | InvalidJson msg -> Printf.printf "Erreur: %s\n" msg
