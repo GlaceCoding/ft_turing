@@ -3,11 +3,10 @@ exception FileNotFound of string
 exception InvalidJson of string
 exception NullValue of string
 exception MatchFailure of string
+exception InvalidArgs of string
 
-
-
-(* Exemple d'utilisation *)
-
+(* Importation de la librairie Yojson *)
+open Yojson.Basic
 
 (* Fonction qui lit un fichier JSON et le parse *)
 let read_json_file filename =
@@ -256,10 +255,31 @@ let display_transtion state transition =
   Printf.printf "%s, " transition.write;
   Printf.printf " %s)\n" transition.action
 
+(* Type pour représenter une configuration *)
+type configuration = {
+  state: string;
+  position: int;
+  tape: string;
+}
+
 (* Fonction qui lance la machine de Turing *)
 let compute_turing_machine valid_setup argument =
   let alphabet, blank, states, initial, finals, transitions = valid_setup in
+  (* Set pour stocker les configurations vues *)
+  let seen_configs = Hashtbl.create 1024 in
   let rec compute_turing_machine_aux tape state position =
+    (* Créer la configuration actuelle *)
+    let current_config = {
+      state = state;
+      position = position;
+      tape = tape
+    } in
+    (* Vérifier si cette configuration a déjà été vue *)
+    if Hashtbl.mem seen_configs current_config then
+      raise (Failure "Infinite loop detected!")
+    else
+      (* Ajouter la configuration courante *)
+      Hashtbl.add seen_configs current_config ();
     if List.mem state finals then
       Printf.printf "Final state reached: %s\n" state
     else
@@ -295,19 +315,34 @@ let compute_turing_machine valid_setup argument =
   let tape = String.concat "" argument in
   compute_turing_machine_aux tape initial 0
 
+let display_help () =
+  Printf.printf "Usage: ./ft_turing [-h] jsonfile input\n\n";
+  Printf.printf "positional arguments:\n jsonfile\t json description of the machine\n input\t\tinput of the machine\n\n";
+  Printf.printf "optional arguments:\n -h, --help\t show this help message and exit\n"
+
 (* Fonction principale *)
 let () =
-  let filename = "data.json" in
-  try
-    let argument = Str.split (Str.regexp "") Sys.argv.(1) in
-    Printf.printf "Argument: %s\n" (String.concat "," argument);
-    let json = read_json_file filename in
-    let valid_setup = check_json json argument in
+try
+    let filename = Sys.argv.(1) in
+    if Array.length Sys.argv < 3 then
+      raise (InvalidArgs "Missing argument")
+    else if
+      Sys.argv.(1) = "-h" || Sys.argv.(1) = "--help" then
+      display_help ()
+    else
+      let argument = Str.split (Str.regexp "") Sys.argv.(2) in
+      Printf.printf "Argument: %s\n" (String.concat "," argument);
+      let json = read_json_file filename in
+      let valid_setup = check_json json argument in
 
-    compute_turing_machine valid_setup argument;
+      compute_turing_machine valid_setup argument;
 
   with
   | FileNotFound msg -> Printf.printf "Erreur: %s\n" msg
   | InvalidJson msg -> Printf.printf "Erreur: %s\n" msg
   | NullValue msg -> Printf.printf "Erreur: %s\n" msg
+  | InvalidArgs msg -> display_help ()
 
+
+
+(* Gerer les boucle infini ? *)
