@@ -320,17 +320,18 @@ let display_help () =
   Printf.printf "positional arguments:\n jsonfile\t json description of the machine\n input\t\tinput of the machine\n\n";
   Printf.printf "optional arguments:\n -h, --help\t show this help message and exit\n"
 
+
 (* Fonction principale *)
 let () =
 try
-    let filename = Sys.argv.(1) in
-    if Array.length Sys.argv < 3 then
-      raise (InvalidArgs "Missing argument")
-    else if
-      Sys.argv.(1) = "-h" || Sys.argv.(1) = "--help" then
+  if Array.length Sys.argv < 3 then
+    raise (InvalidArgs "Missing argument")
+  else if
+    Sys.argv.(1) = "-h" || Sys.argv.(1) = "--help" then
       display_help ()
-    else
-      let argument = Str.split (Str.regexp "") Sys.argv.(2) in
+  else
+    let filename = Sys.argv.(1) in
+    let argument = Str.split (Str.regexp "") Sys.argv.(2) in
       Printf.printf "Argument: %s\n" (String.concat "," argument);
       let json = read_json_file filename in
       let valid_setup = check_json json argument in
