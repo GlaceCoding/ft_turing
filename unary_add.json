@@ -3,15 +3,14 @@
 	"alphabet": [
 		"1",
 		".",
-		"0",
-		"y",
-		"n"
+		"+",
+		"="
 	],
 	"blank": ".",
 	"states": [
 		"scanright",
-		"scanleft",
-		"result",
+		"eraseone",
+		"skip",
 		"HALT"
 	],
 	"initial": "scanright",
@@ -22,12 +21,6 @@
 		"scanright": [
 			{
 				"read": ".",
-				"to_state": "scanleft",
-				"write": ".",
-				"action": "LEFT"
-			},
-			{
-				"read": "0",
 				"to_state": "scanright",
 				"write": ".",
 				"action": "RIGHT"
@@ -35,35 +28,37 @@
 			{
 				"read": "1",
 				"to_state": "scanright",
-				"write": ".",
+				"write": "1",
 				"action": "RIGHT"
-			}
-
-		],
-		"scanleft": [
+			},
 			{
-				"read": ".",
-				"to_state": "result",
-				"write": ".",
+				"read": "+",
+				"to_state": "scanright",
+				"write": "1",
 				"action": "RIGHT"
+			},
+			{
+				"read": "=",
+				"to_state": "eraseone",
+				"write": ".",
+				"action": "LEFT"
 			}
 		],
 		"eraseone": [
 			{
 				"read": "1",
-				"to_state": "subone",
+				"to_state": "skip",
 				"write": ".",
 				"action": "RIGHT"
 			}
 		],
-		"subone": [
+		"skip": [
 			{
-				"read": "1",
-				"to_state": "subone",
-				"write": "1",
+				"read": ".",
+				"to_state": "HALT",
+				"write": ".",
 				"action": "LEFT"
 			}
 		]
-
 	}
 }
