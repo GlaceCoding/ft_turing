@@ -285,8 +285,8 @@ let compute_turing_machine valid_setup argument =
     else
       let current_symbol = if position < 0 || position >= String.length tape then
         blank
-      else
-        String.make 1 tape.[position]
+                          else
+                              String.make 1 tape.[position]
       in
       try
         let transition = List.find (fun (s, _) -> s = state) transitions in
@@ -305,6 +305,7 @@ let compute_turing_machine valid_setup argument =
       else
         position + 1
       in
+      Printf.printf "Position: %d\n" position;
       display_tape tape position;
       display_transtion state transition;
       compute_turing_machine_aux new_tape transition.to_state new_position
@@ -319,7 +320,6 @@ let display_help () =
   Printf.printf "Usage: ./ft_turing [-h] jsonfile input\n\n";
   Printf.printf "positional arguments:\n jsonfile\t json description of the machine\n input\t\tinput of the machine\n\n";
   Printf.printf "optional arguments:\n -h, --help\t show this help message and exit\n"
-
 
 (* Fonction principale *)
 let () =
@@ -343,7 +343,5 @@ try
   | InvalidJson msg -> Printf.printf "Erreur: %s\n" msg
   | NullValue msg -> Printf.printf "Erreur: %s\n" msg
   | InvalidArgs msg -> display_help ()
-
-
 
 (* Gerer les boucle infini ? *)

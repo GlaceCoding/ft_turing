@@ -1,0 +1,499 @@
+{
+	"name": "palindrome",
+	"alphabet": [
+		"1",
+		"a",
+		".",
+		"0",
+		"b",
+		"y",
+		"n"
+	],
+	"blank": ".",
+	"states": [
+		"KORIGHT",
+		"KOLEFT",
+		"OKLEFT",
+		"OKRIGHT",
+		"READRIGHT",
+		"READLEFT",
+		"READ1RIGHT",
+		"READ1LEFT",
+		"VERIFY1LEFT",
+		"VERIFY1RIGHT",
+		"READ0RIGHT",
+		"READ0LEFT",
+		"VERIFY0LEFT",
+		"VERIFY0RIGHT",
+		"FINAL",
+		"KOFINAL",
+		"DISPLAYN",
+		"HALT"
+	],
+	"initial": "READRIGHT",
+	"finals": [
+		"HALT"
+	],
+	"transitions": {
+		"READRIGHT": [
+			{
+				"read": "1",
+				"to_state": "READ1RIGHT",
+				"write": "a",
+				"action": "RIGHT"
+			},
+			{
+				"read": "0",
+				"to_state": "READ0RIGHT",
+				"write": "b",
+				"action": "RIGHT"
+			},
+			{
+				"read": "a",
+				"to_state": "OKLEFT",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "b",
+				"to_state": "OKLEFT",
+				"write": "b",
+				"action": "LEFT"
+			}
+		],
+		"READ1RIGHT": [
+			{
+				"read": "1",
+				"to_state": "READ1RIGHT",
+				"write": "1",
+				"action": "RIGHT"
+			},
+			{
+				"read": "0",
+				"to_state": "READ1RIGHT",
+				"write": "0",
+				"action": "RIGHT"
+			},
+			{
+				"read": ".",
+				"to_state": "VERIFY1RIGHT",
+				"write": ".",
+				"action": "LEFT"
+			},
+			{
+				"read": "a",
+				"to_state": "VERIFY1RIGHT",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "b",
+				"to_state": "VERIFY1RIGHT",
+				"write": "b",
+				"action": "LEFT"
+			}
+		],
+		"READ1LEFT": [
+			{
+				"read": "1",
+				"to_state": "READ1LEFT",
+				"write": "1",
+				"action": "LEFT"
+			},
+			{
+				"read": "0",
+				"to_state": "READ1LEFT",
+				"write": "0",
+				"action": "LEFT"
+			},
+			{
+				"read": ".",
+				"to_state": "VERIFY1LEFT",
+				"write": ".",
+				"action": "RIGHT"
+			},
+			{
+				"read": "a",
+				"to_state": "VERIFY1LEFT",
+				"write": "a",
+				"action": "RIGHT"
+			},
+			{
+				"read": "b",
+				"to_state": "VERIFY1LEFT",
+				"write": "b",
+				"action": "RIGHT"
+			}
+		],
+		"READ0RIGHT" : [
+			{
+				"read": "1",
+				"to_state": "READ0RIGHT",
+				"write": "1",
+				"action": "RIGHT"
+			},
+			{
+				"read": "0",
+				"to_state": "READ0RIGHT",
+				"write": "0",
+				"action": "RIGHT"
+			},
+			{
+				"read": ".",
+				"to_state": "VERIFY0RIGHT",
+				"write": ".",
+				"action": "LEFT"
+			},
+			{
+				"read": "a",
+				"to_state": "VERIFY0RIGHT",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "b",
+				"to_state": "VERIFY0RIGHT",
+				"write": "b",
+				"action": "LEFT"
+			}
+		],
+		"READ0LEFT" : [
+			{
+				"read": "1",
+				"to_state": "READ0LEFT",
+				"write": "1",
+				"action": "LEFT"
+			},
+			{
+				"read": "0",
+				"to_state": "READ0LEFT",
+				"write": "0",
+				"action": "LEFT"
+			},
+			{
+				"read": ".",
+				"to_state": "VERIFY0LEFT",
+				"write": ".",
+				"action": "RIGHT"
+			},
+			{
+				"read": "a",
+				"to_state": "VERIFY0LEFT",
+				"write": "a",
+				"action": "RIGHT"
+			},
+			{
+				"read": "b",
+				"to_state": "VERIFY0LEFT",
+				"write": "b",
+				"action": "RIGHT"
+			}
+		],
+		"VERIFY1RIGHT": [
+			{
+				"read": "1",
+				"to_state": "READLEFT",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "0",
+				"to_state": "KOLEFT",
+				"write": "0",
+				"action": "LEFT"
+			},
+			{
+				"read": "a",
+				"to_state": "OKLEFT",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "b",
+				"to_state": "OKLEFT",
+				"write": "b",
+				"action": "LEFT"
+			}
+		],
+		"VERIFY1LEFT": [
+			{
+				"read": "1",
+				"to_state": "READRIGHT",
+				"write": "a",
+				"action": "RIGHT"
+			},
+			{
+				"read": "0",
+				"to_state": "KOLEFT",
+				"write": "0",
+				"action": "LEFT"
+			},
+			{
+				"read": "a",
+				"to_state": "OKLEFT",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "b",
+				"to_state": "OKLEFT",
+				"write": "b",
+				"action": "LEFT"
+			}
+		],
+		"VERIFY0LEFT": [
+			{
+				"read": "1",
+				"to_state": "KOLEFT",
+				"write": "1",
+				"action": "LEFT"
+			},
+			{
+				"read": "0",
+				"to_state": "READRIGHT",
+				"write": "b",
+				"action": "RIGHT"
+			},
+			{
+				"read": "a",
+				"to_state": "OKLEFT",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "b",
+				"to_state": "OKLEFT",
+				"write": "b",
+				"action": "LEFT"
+			}
+		],
+		"VERIFY0RIGHT": [
+			{
+				"read": "1",
+				"to_state": "KOLEFT",
+				"write": "1",
+				"action": "LEFT"
+			},
+			{
+				"read": "0",
+				"to_state": "READLEFT",
+				"write": "b",
+				"action": "LEFT"
+			},
+			{
+				"read": "a",
+				"to_state": "OKLEFT",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "b",
+				"to_state": "OKLEFT",
+				"write": "b",
+				"action": "LEFT"
+			}
+		],
+		"READLEFT": [
+			{
+				"read": "1",
+				"to_state": "READ1LEFT",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "0",
+				"to_state": "READ0LEFT",
+				"write": "b",
+				"action": "LEFT"
+			},
+			{
+				"read": "a",
+				"to_state": "OKLEFT",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "b",
+				"to_state": "OKLEFT",
+				"write": "b",
+				"action": "LEFT"
+			}
+		],
+		"OKLEFT": [
+			{
+				"read": "a",
+				"to_state": "OKLEFT",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "b",
+				"to_state": "OKLEFT",
+				"write": "b",
+				"action": "LEFT"
+			},
+			{
+				"read": ".",
+				"to_state": "OKRIGHT",
+				"write": ".",
+				"action": "RIGHT"
+			}
+		],
+		"OKRIGHT": [
+			{
+				"read": "a",
+				"to_state": "OKRIGHT",
+				"write": "1",
+				"action": "RIGHT"
+			},
+			{
+				"read": "b",
+				"to_state": "OKRIGHT",
+				"write": "0",
+				"action": "RIGHT"
+			},
+			{
+				"read": ".",
+				"to_state": "FINAL",
+				"write": ".",
+				"action": "RIGHT"
+			}
+		],
+		"KOLEFT": [
+			{
+				"read": "a",
+				"to_state": "KOLEFT",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "b",
+				"to_state": "KOLEFT",
+				"write": "b",
+				"action": "LEFT"
+			},
+			{
+				"read": ".",
+				"to_state": "KORIGHT",
+				"write": ".",
+				"action": "RIGHT"
+			},
+			{
+				"read": "1",
+				"to_state": "KOLEFT",
+				"write": "1",
+				"action": "LEFT"
+			},
+			{
+				"read": "0",
+				"to_state": "KOLEFT",
+				"write": "0",
+				"action": "LEFT"
+			}
+		],
+		"KORIGHT": [
+			{
+				"read": "a",
+				"to_state": "KORIGHT",
+				"write": "1",
+				"action": "RIGHT"
+			},
+			{
+				"read": "b",
+				"to_state": "KORIGHT",
+				"write": "0",
+				"action": "RIGHT"
+			},
+			{
+				"read": ".",
+				"to_state": "KOFINAL",
+				"write": ".",
+				"action": "RIGHT"
+			}
+		],
+		"FINAL": [
+			{
+				"read": ".",
+				"to_state": "FINAL",
+				"write": "y",
+				"action": "LEFT"
+			},
+			{
+				"read": "a",
+				"to_state": "FINAL",
+				"write": "1",
+				"action": "RIGHT"
+			},
+			{
+				"read": "b",
+				"to_state": "FINAL",
+				"write": "0",
+				"action": "RIGHT"
+			},
+			{
+				"read": "1",
+				"to_state": "HALT",
+				"write": "1",
+				"action": "LEFT"
+			},
+			{
+				"read": "0",
+				"to_state": "HALT",
+				"write": "0",
+				"action": "LEFT"
+			}
+		],
+		"KOFINAL": [
+			{
+				"read": ".",
+				"to_state": "DISPLAYN",
+				"write": "n",
+				"action": "LEFT"
+			},
+			{
+				"read": "a",
+				"to_state": "KOFINAL",
+				"write": "1",
+				"action": "RIGHT"
+			},
+			{
+				"read": "b",
+				"to_state": "KOFINAL",
+				"write": "0",
+				"action": "RIGHT"
+			},
+			{
+				"read": "1",
+				"to_state": "KOFINAL",
+				"write": "1",
+				"action": "RIGHT"
+			},
+			{
+				"read": "0",
+				"to_state": "KOFINAL",
+				"write": "0",
+				"action": "RIGHT"
+			}
+		],
+		"DISPLAYN": [
+			{
+				"read": "n",
+				"to_state": "DISPLAYN",
+				"write": "n",
+				"action": "LEFT"
+			},
+			{
+				"read": "1",
+				"to_state": "HALT",
+				"write": "1",
+				"action": "LEFT"
+			},
+			{
+				"read": "0",
+				"to_state": "HALT",
+				"write": "0",
+				"action": "LEFT"
+			}
+		]
+	}
+}
