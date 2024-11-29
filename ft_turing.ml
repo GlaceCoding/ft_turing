@@ -273,26 +273,31 @@ let compute_turing_machine valid_setup argument =
       state = state;
       position = position;
       tape = tape
-    } in
-    (* Vérifier si cette configuration a déjà été vue *)
-    if Hashtbl.mem seen_configs current_config then
-      raise (Failure "Infinite loop detected!")
-    else
-      (* Ajouter la configuration courante *)
-      Hashtbl.add seen_configs current_config ();
-    if List.mem state finals then
-      Printf.printf "Final state reached: %s\n" state
-    else
-      let current_symbol = if position < 0 || position >= String.length tape then
-        blank
-                          else
-                              String.make 1 tape.[position]
-      in
+      } in
+      Printf.printf "position: %d\n" position;
+      (* Vérifier si cette configuration a déjà été vue *)
+      if Hashtbl.mem seen_configs current_config then
+        raise (Failure "Infinite loop detected!")
+      else
+        (* Ajouter la configuration courante *)
+        Hashtbl.add seen_configs current_config ();
+        if List.mem state finals then
+          Printf.printf "Final state reached: %s\n" state
+        else
+          let current_symbol = if position < 0 || position >= String.length tape then
+            blank
+          else
+            String.make 1 tape.[position]
+          in
       try
         let transition = List.find (fun (s, _) -> s = state) transitions in
         let transition = List.find (fun t -> t.read = current_symbol) (snd transition) in
       let new_tape = if position < 0 then
-        transition.write ^ tape
+        begin
+          (* position := !position + 1; *)
+          (* Printf.printf "position here\n"; *)
+          transition.write ^ tape
+        end
       else if position >= String.length tape then
         tape ^ transition.write
       else
@@ -302,10 +307,12 @@ let compute_turing_machine valid_setup argument =
       in
       let new_position = if transition.action = "LEFT" then
         position - 1
+      else if position < 0 then
+        position + 2
       else
         position + 1
       in
-      Printf.printf "Position: %d\n" position;
+      (* Printf.printf "Position: %d\n" position; *)
       display_tape tape position;
       display_transtion state transition;
       compute_turing_machine_aux new_tape transition.to_state new_position

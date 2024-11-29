@@ -1,0 +1,256 @@
+{
+	"name": "0n1n",
+	"alphabet": [
+		"1",
+		"a",
+		".",
+		"0",
+		"b",
+		"y",
+		"n"
+	],
+	"blank": ".",
+	"states": [
+		"START",
+		"SEEK0",
+		"SEEK1",
+		"HALT",
+		"TEST",
+		"FAILURE",
+		"DISPLAYRES",
+		"SWAPCHARSUCCESS",
+		"SWAPCHARFAILURE"
+	],
+	"initial": "START",
+	"finals": [
+		"HALT"
+	],
+	"transitions": {
+		"START": [
+			{
+				"read": "0",
+				"to_state": "SEEK1",
+				"write": "0",
+				"action": "RIGHT"
+			},
+			{
+				"read": "1",
+				"to_state": "SWAPCHARFAILURE",
+				"write": "1",
+				"action": "RIGHT"
+			},
+			{
+				"read": ".",
+				"to_state": "HALT",
+				"write": ".",
+				"action": "LEFT"
+			},
+			{
+				"read": "a",
+				"to_state": "HALT",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "b",
+				"to_state": "HALT",
+				"write": "b",
+				"action": "LEFT"
+			},
+			{
+				"read": "y",
+				"to_state": "HALT",
+				"write": "y",
+				"action": "LEFT"
+			},
+			{
+				"read": "n",
+				"to_state": "HALT",
+				"write": "n",
+				"action": "LEFT"
+			}
+		],
+		"SEEK1": [
+			{
+				"read": "0",
+				"to_state": "SEEK1",
+				"write": "0",
+				"action": "RIGHT"
+			},
+			{
+				"read": "1",
+				"to_state": "SEEK0",
+				"write": "b",
+				"action": "LEFT"
+			},
+			{
+				"read": ".",
+				"to_state": "TEST",
+				"write": ".",
+				"action": "LEFT"
+			},
+			{
+				"read": "a",
+				"to_state": "SEEK1",
+				"write": "a",
+				"action": "RIGHT"
+			},
+			{
+				"read": "b",
+				"to_state": "SEEK1",
+				"write": "b",
+				"action": "RIGHT"
+			}
+		],
+		"SEEK0": [
+			{
+				"read": "0",
+				"to_state": "SEEK1",
+				"write": "a",
+				"action": "RIGHT"
+			},
+			{
+				"read": "a",
+				"to_state": "SEEK0",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "b",
+				"to_state": "SEEK0",
+				"write": "b",
+				"action": "LEFT"
+			},
+			{
+				"read": ".",
+				"to_state": "FAILURE",
+				"write": ".",
+				"action": "RIGHT"
+			}
+		],
+		"TEST": [
+			{
+				"read": "0",
+				"to_state": "FAILURE",
+				"write": "0",
+				"action": "LEFT"
+			},
+			{
+				"read": "a",
+				"to_state": "TEST",
+				"write": "a",
+				"action": "LEFT"
+			},
+			{
+				"read": "b",
+				"to_state": "TEST",
+				"write": "b",
+				"action": "LEFT"
+			},
+			{
+				"read": ".",
+				"to_state": "SWAPCHARSUCCESS",
+				"write": ".",
+				"action": "RIGHT"
+			}
+		],
+		"FAILURE": [
+			{
+				"read": ".",
+				"to_state": "SWAPCHARFAILURE",
+				"write": ".",
+				"action": "RIGHT"
+			},
+			{
+				"read": "0",
+				"to_state": "FAILURE",
+				"write": "0",
+				"action": "LEFT"
+			},
+			{
+				"read": "a",
+				"to_state": "FAILURE",
+				"write": "a",
+				"action": "LEFT"
+			}
+		],
+		"SWAPCHARSUCCESS" : [
+			{
+				"read": "0",
+				"to_state": "SWAPCHARSUCCESS",
+				"write": "0",
+				"action": "RIGHT"
+			},
+			{
+				"read": "1",
+				"to_state": "SWAPCHARSUCCESS",
+				"write": "1",
+				"action": "RIGHT"
+			},
+			{
+				"read": "a",
+				"to_state": "SWAPCHARSUCCESS",
+				"write": "0",
+				"action": "RIGHT"
+			},
+			{
+				"read": "b",
+				"to_state": "SWAPCHARSUCCESS",
+				"write": "1",
+				"action": "RIGHT"
+			},
+			{
+				"read": ".",
+				"to_state": "DISPLAYRES",
+				"write": "y",
+				"action": "LEFT"
+			}
+		],
+		"SWAPCHARFAILURE" : [
+			{
+				"read": "0",
+				"to_state": "SWAPCHARFAILURE",
+				"write": "0",
+				"action": "RIGHT"
+			},
+			{
+				"read": "1",
+				"to_state": "SWAPCHARFAILURE",
+				"write": "1",
+				"action": "RIGHT"
+			},
+			{
+				"read": "a",
+				"to_state": "SWAPCHARFAILURE",
+				"write": "0",
+				"action": "RIGHT"
+			},
+			{
+				"read": "b",
+				"to_state": "SWAPCHARFAILURE",
+				"write": "1",
+				"action": "RIGHT"
+			},
+			{
+				"read": ".",
+				"to_state": "DISPLAYRES",
+				"write": "n",
+				"action": "LEFT"
+			}
+		],
+		"DISPLAYRES": [
+			{
+				"read": "1",
+				"to_state": "HALT",
+				"write": "1",
+				"action": "LEFT"
+			},
+			{
+				"read": "0",
+				"to_state": "HALT",
+				"write": "0",
+				"action": "LEFT"
+			}
+		]
+	}
+}
