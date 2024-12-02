@@ -26,8 +26,6 @@
 		"VERIFY0LEFT",
 		"VERIFY0RIGHT",
 		"FINAL",
-		"KOFINAL",
-		"DISPLAYN",
 		"HALT"
 	],
 	"initial": "READRIGHT",
@@ -355,8 +353,8 @@
 			{
 				"read": ".",
 				"to_state": "FINAL",
-				"write": ".",
-				"action": "RIGHT"
+				"write": "y",
+				"action": "LEFT"
 			}
 		],
 		"KOLEFT": [
@@ -406,82 +404,24 @@
 			},
 			{
 				"read": ".",
-				"to_state": "KOFINAL",
-				"write": ".",
+				"to_state": "FINAL",
+				"write": "n",
+				"action": "LEFT"
+			},
+			{
+				"read": "1",
+				"to_state": "KORIGHT",
+				"write": "1",
+				"action": "RIGHT"
+			},
+			{
+				"read": "0",
+				"to_state": "KORIGHT",
+				"write": "0",
 				"action": "RIGHT"
 			}
 		],
 		"FINAL": [
-			{
-				"read": ".",
-				"to_state": "FINAL",
-				"write": "y",
-				"action": "LEFT"
-			},
-			{
-				"read": "a",
-				"to_state": "FINAL",
-				"write": "1",
-				"action": "RIGHT"
-			},
-			{
-				"read": "b",
-				"to_state": "FINAL",
-				"write": "0",
-				"action": "RIGHT"
-			},
-			{
-				"read": "1",
-				"to_state": "HALT",
-				"write": "1",
-				"action": "LEFT"
-			},
-			{
-				"read": "0",
-				"to_state": "HALT",
-				"write": "0",
-				"action": "LEFT"
-			}
-		],
-		"KOFINAL": [
-			{
-				"read": ".",
-				"to_state": "DISPLAYN",
-				"write": "n",
-				"action": "LEFT"
-			},
-			{
-				"read": "a",
-				"to_state": "KOFINAL",
-				"write": "1",
-				"action": "RIGHT"
-			},
-			{
-				"read": "b",
-				"to_state": "KOFINAL",
-				"write": "0",
-				"action": "RIGHT"
-			},
-			{
-				"read": "1",
-				"to_state": "KOFINAL",
-				"write": "1",
-				"action": "RIGHT"
-			},
-			{
-				"read": "0",
-				"to_state": "KOFINAL",
-				"write": "0",
-				"action": "RIGHT"
-			}
-		],
-		"DISPLAYN": [
-			{
-				"read": "n",
-				"to_state": "DISPLAYN",
-				"write": "n",
-				"action": "LEFT"
-			},
 			{
 				"read": "1",
 				"to_state": "HALT",
