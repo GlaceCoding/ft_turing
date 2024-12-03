@@ -1,0 +1,80 @@
+{
+	"name": "palindrome",
+	"alphabet": [
+		".",
+		"0",
+		"y",
+		"n"
+	],
+	"blank": ".",
+	"states": [
+		"KO",
+		"OK",
+		"READRIGHT",
+		"READ0RIGHT",
+		"HALT"
+	],
+	"initial": "READRIGHT",
+	"finals": [
+		"HALT"
+	],
+	"transitions": {
+		"READRIGHT": [
+			{
+				"read": "0",
+				"to_state": "READ0RIGHT",
+				"write": "0",
+				"action": "RIGHT"
+			},
+			{
+				"read": ".",
+				"to_state": "OK",
+				"write": "y",
+				"action": "LEFT"
+			}
+		],
+		"READ0RIGHT": [
+			{
+				"read": "0",
+				"to_state": "READRIGHT",
+				"write": "0",
+				"action": "RIGHT"
+			},
+			{
+				"read": ".",
+				"to_state": "KO",
+				"write": "n",
+				"action": "LEFT"
+			}
+		],
+		"OK": [
+			{
+				"read": "0",
+				"to_state": "HALT",
+				"write": "0",
+				"action": "LEFT"
+			},
+			{
+				"read": ".",
+				"to_state": "HALT",
+				"write": ".",
+				"action": "LEFT"
+			}
+		],
+
+		"KO": [
+			{
+				"read": ".",
+				"to_state": "HALT",
+				"write": ".",
+				"action": "LEFT"
+			},
+			{
+				"read": "0",
+				"to_state": "HALT",
+				"write": "0",
+				"action": "LEFT"
+			}
+		]
+	}
+}
