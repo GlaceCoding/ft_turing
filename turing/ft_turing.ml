@@ -341,6 +341,7 @@ try
   | FileNotFound msg -> Printf.printf "Erreur: %s\n" msg
   | InvalidJson msg -> Printf.printf "Erreur: %s\n" msg
   | NullValue msg -> Printf.printf "Erreur: %s\n" msg
+  | MatchFailure msg -> Printf.printf "Erreur : %s\n" msg
   | InvalidArgs msg -> display_help ()
 
 (* Gerer les boucle infini ? *)
