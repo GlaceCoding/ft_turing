@@ -19,12 +19,15 @@ run: build
 	docker run -it $(NAME) make run
 
 clean:
-	echo "Nothing to rm"
+	docker rmi -f $(NAME)
 
 fclean: clean
+	docker image prune -a
+	docker builder prune -a
+
 
 clean_docker:
 	docker rm -vf $(docker ps -aq)
 	docker rmi -f $(docker images -aq)
 
-.PHONY: all re $(NAME) clean fclean clean_docker run
+.PHONY: all re $(NAME) clean fclean clean_docker run build
