@@ -1,5 +1,5 @@
 OCAML = ocamlfind ocamlc
-OCAMLFLAGS = -package yojson,str -linkpkg 
+OCAMLFLAGS = -package yojson,str,unix -linkpkg 
 
 NAME = ft_turing
 SOURCES = ft_turing.ml

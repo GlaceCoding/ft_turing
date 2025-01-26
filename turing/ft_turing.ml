@@ -267,6 +267,8 @@ let compute_turing_machine valid_setup argument =
       tape = tape
       } in
       Printf.printf "position: %d\n" position;
+      Unix.sleepf 0.2;
+      flush stdout;
       (* Vérifier si cette configuration a déjà été vue *)
       if Hashtbl.mem seen_configs current_config then
         raise (Failure "Infinite loop detected!")
