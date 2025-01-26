@@ -230,14 +230,6 @@ let check_json json argument =
 
 (* Fonction qui affiche le contenu de la bande *)
 let display_tape tape position =
-  let rec aux i =
-    if i < 0 then
-      Printf.printf "_"
-    else if i >= String.length tape then
-      Printf.printf "_"
-    else
-      Printf.printf "%c" tape.[i]
-    in
     Printf.printf "[";
     for i = 0 to String.length tape - 1 do
       if i = position then
