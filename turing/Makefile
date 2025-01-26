@@ -12,10 +12,13 @@ re: clean
 $(NAME): $(SOURCES)
 	$(OCAML) $(OCAMLFLAGS) -o $(NAME) $(SOURCES)
 
+run: $(NAME)
+	./$(NAME) json/unary_add.json "111+11=" 
+
 clean:
 	rm -f *.cmi *.cmo *.byte
 
 fclean: clean
 	rm -f $(NAME)
 
-.PHONY: all clean re fclean
+.PHONY: all clean re fclean run
