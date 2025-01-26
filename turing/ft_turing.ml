@@ -48,10 +48,10 @@ let check_alphabet json argument =
         match x with
         | `String s when String.length s > 1 ->
           raise (InvalidJson ("Alphabet must be single characters: " ^ s))
-        | `String s -> Printf.printf "%s " s; s
+        | `String s -> s
         | _ -> raise (InvalidJson "Alphabet must be strings")
       ) alphabet in
-      Printf.printf "]\n";
+      Printf.printf "%s]\n" (String.concat ", " result);
       List.iter (fun x ->
         if not (List.mem x result) then
           raise (InvalidJson ("Argument not in alphabet: " ^ x))
@@ -92,9 +92,9 @@ let check_blank json alphabet =
       if not (List.mem blank str_alphabet) then
         raise (InvalidJson ("Blank symbol must be in alphabet: " ^ blank))
       else (
-        (* Printf.printf "Blank: %s\n" blank; *)
+        Printf.printf "Blank: %s\n" blank;
         (* find_index blank str_alphabet *)
-        blank
+        blank.[0]
       )
   | `String blank ->
       raise (InvalidJson ("Blank symbol must be a single character: " ^ blank))
@@ -107,12 +107,10 @@ let check_states json =
   | `List states ->
       let result = List.map (fun x ->
         match x with
-        | `String s ->
-            Printf.printf "%s " s;
-            s
+        | `String s -> s
         | _ -> raise (InvalidJson "States must be strings")
       ) states in
-      Printf.printf "]\n";
+      Printf.printf "%s]\n" (String.concat ", " result);
       result
   | _ -> raise (InvalidJson "Expected list for key 'states'")
 
@@ -230,20 +228,12 @@ let check_json json argument =
 
 (* Fonction qui affiche le contenu de la bande *)
 let display_tape tape position =
-  let rec aux i =
-    if i < 0 then
-      Printf.printf "_"
-    else if i >= String.length tape then
-      Printf.printf "_"
-    else
-      Printf.printf "%c" tape.[i]
-    in
     Printf.printf "[";
     for i = 0 to String.length tape - 1 do
       if i = position then
       Printf.printf "<%c>" tape.[i]
     else
-      Printf.printf " %c " tape.[i]
+      Printf.printf "%c" tape.[i]
   done;
   Printf.printf "...............] "
 
@@ -274,7 +264,9 @@ let compute_turing_machine valid_setup argument =
       position = position;
       tape = tape
       } in
-      Printf.printf "position: %d\n" position;
+      Unix.sleepf 0.2;
+      flush stdout;
+      (* Printf.printf "position: %d\n" position; *)
       (* Vérifier si cette configuration a déjà été vue *)
       if Hashtbl.mem seen_configs current_config then
         raise (Failure "Infinite loop detected!")
@@ -282,13 +274,21 @@ let compute_turing_machine valid_setup argument =
         (* Ajouter la configuration courante *)
         Hashtbl.add seen_configs current_config ();
         if List.mem state finals then
-          Printf.printf "Final state reached: %s\n" state
+          let trim_start str =
+            let len = String.length str in
+            let rec aux i = if i < len && str.[i] = ' ' then aux (i + 1) else i in
+            let start = aux 0 in
+            String.sub str start (len - start)
+          in
+          let trimmed_tape = (tape
+            |> String.mapi (fun _ c -> if c = blank then ' ' else c) |> trim_start) in
+          Printf.printf "Result: %s\nFinal state reached: %s\n" trimmed_tape state
         else
-          let current_symbol = if position < 0 || position >= String.length tape then
+          let current_symbol = String.make 1 (if position < 0 || position >= String.length tape then
             blank
           else
-            String.make 1 tape.[position]
-          in
+            tape.[position]
+          ) in
       try
         let transition = List.find (fun (s, _) -> s = state) transitions in
         let transition = List.find (fun t -> t.read = current_symbol) (snd transition) in
@@ -349,6 +349,7 @@ try
   | FileNotFound msg -> Printf.printf "Erreur: %s\n" msg
   | InvalidJson msg -> Printf.printf "Erreur: %s\n" msg
   | NullValue msg -> Printf.printf "Erreur: %s\n" msg
+  | MatchFailure msg -> Printf.printf "Erreur : %s\n" msg
   | InvalidArgs msg -> display_help ()
 
 (* Gerer les boucle infini ? *)
