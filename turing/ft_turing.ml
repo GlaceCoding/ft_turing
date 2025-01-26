@@ -233,7 +233,7 @@ let display_tape tape position =
       if i = position then
       Printf.printf "<%c>" tape.[i]
     else
-      Printf.printf " %c " tape.[i]
+      Printf.printf "%c" tape.[i]
   done;
   Printf.printf "...............] "
 
