@@ -48,10 +48,10 @@ let check_alphabet json argument =
         match x with
         | `String s when String.length s > 1 ->
           raise (InvalidJson ("Alphabet must be single characters: " ^ s))
-        | `String s -> Printf.printf "%s " s; s
+        | `String s -> s
         | _ -> raise (InvalidJson "Alphabet must be strings")
       ) alphabet in
-      Printf.printf "]\n";
+      Printf.printf "%s]\n" (String.concat ", " result);
       List.iter (fun x ->
         if not (List.mem x result) then
           raise (InvalidJson ("Argument not in alphabet: " ^ x))
@@ -92,7 +92,7 @@ let check_blank json alphabet =
       if not (List.mem blank str_alphabet) then
         raise (InvalidJson ("Blank symbol must be in alphabet: " ^ blank))
       else (
-        (* Printf.printf "Blank: %s\n" blank; *)
+        Printf.printf "Blank: %s\n" blank;
         (* find_index blank str_alphabet *)
         blank
       )
@@ -107,12 +107,10 @@ let check_states json =
   | `List states ->
       let result = List.map (fun x ->
         match x with
-        | `String s ->
-            Printf.printf "%s " s;
-            s
+        | `String s -> s
         | _ -> raise (InvalidJson "States must be strings")
       ) states in
-      Printf.printf "]\n";
+      Printf.printf "%s]\n" (String.concat ", " result);
       result
   | _ -> raise (InvalidJson "Expected list for key 'states'")
 
