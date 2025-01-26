@@ -94,7 +94,7 @@ let check_blank json alphabet =
       else (
         Printf.printf "Blank: %s\n" blank;
         (* find_index blank str_alphabet *)
-        blank
+        blank.[0]
       )
   | `String blank ->
       raise (InvalidJson ("Blank symbol must be a single character: " ^ blank))
@@ -264,9 +264,9 @@ let compute_turing_machine valid_setup argument =
       position = position;
       tape = tape
       } in
-      Printf.printf "position: %d\n" position;
       Unix.sleepf 0.2;
       flush stdout;
+      (* Printf.printf "position: %d\n" position; *)
       (* Vérifier si cette configuration a déjà été vue *)
       if Hashtbl.mem seen_configs current_config then
         raise (Failure "Infinite loop detected!")
@@ -274,13 +274,21 @@ let compute_turing_machine valid_setup argument =
         (* Ajouter la configuration courante *)
         Hashtbl.add seen_configs current_config ();
         if List.mem state finals then
-          Printf.printf "Final state reached: %s\n" state
+          let trim_start str =
+            let len = String.length str in
+            let rec aux i = if i < len && str.[i] = ' ' then aux (i + 1) else i in
+            let start = aux 0 in
+            String.sub str start (len - start)
+          in
+          let trimmed_tape = (tape
+            |> String.mapi (fun _ c -> if c = blank then ' ' else c) |> trim_start) in
+          Printf.printf "Result: %s\nFinal state reached: %s\n" trimmed_tape state
         else
-          let current_symbol = if position < 0 || position >= String.length tape then
+          let current_symbol = String.make 1 (if position < 0 || position >= String.length tape then
             blank
           else
-            String.make 1 tape.[position]
-          in
+            tape.[position]
+          ) in
       try
         let transition = List.find (fun (s, _) -> s = state) transitions in
         let transition = List.find (fun t -> t.read = current_symbol) (snd transition) in
