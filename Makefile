@@ -2,7 +2,7 @@ NAME=env_turing
 
 all: $(NAME)
 
-re: fclean
+re: clean
 	make all
 
 build:
@@ -30,4 +30,4 @@ clean_docker:
 	docker rm -vf $(docker ps -aq)
 	docker rmi -f $(docker images -aq)
 
-.PHONY: all re $(NAME) clean fclean clean_docker run build
+.PHONY: all re build $(NAME) clean fclean clean_docker run
