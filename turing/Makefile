@@ -1,19 +1,18 @@
 OCAML = ocamlfind ocamlc
-OCAMLFLAGS = -package yojson,str,unix -linkpkg 
+OCAMLFLAGS = -package yojson,str,unix -linkpkg
 
 NAME = ft_turing
 SOURCES = ft_turing.ml
 
 all: $(NAME)
 
-re: clean
-	make all
+re: fclean all
 
 $(NAME): $(SOURCES)
 	$(OCAML) $(OCAMLFLAGS) -o $(NAME) $(SOURCES)
 
 run: $(NAME)
-	./$(NAME) json/unary_add.json "111+11=" 
+	./$(NAME) json/unary_add.json "111+11="
 
 clean:
 	rm -f *.cmi *.cmo *.byte

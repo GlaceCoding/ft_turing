@@ -10,6 +10,7 @@
 	"states": [
 		"scanright",
 		"eraseone",
+		"seekplus",
 		"skip",
 		"HALT"
 	],
@@ -20,19 +21,7 @@
 	"transitions": {
 		"scanright": [
 			{
-				"read": ".",
-				"to_state": "scanright",
-				"write": ".",
-				"action": "RIGHT"
-			},
-			{
 				"read": "1",
-				"to_state": "scanright",
-				"write": "1",
-				"action": "RIGHT"
-			},
-			{
-				"read": "+",
 				"to_state": "scanright",
 				"write": "1",
 				"action": "RIGHT"
@@ -42,22 +31,60 @@
 				"to_state": "eraseone",
 				"write": ".",
 				"action": "LEFT"
+			},
+			{
+				"read": "+",
+				"to_state": "scanright",
+				"write": "+",
+				"action": "RIGHT"
+			}
+		],
+		"seekplus": [
+			{
+				"read": "+",
+				"to_state": "skip",
+				"write": "1",
+				"action": "LEFT"
+			},
+			{
+				"read": "1",
+				"to_state": "seekplus",
+				"write": "1",
+				"action": "LEFT"
 			}
 		],
 		"eraseone": [
 			{
 				"read": "1",
-				"to_state": "skip",
+				"to_state": "seekplus",
 				"write": ".",
-				"action": "RIGHT"
+				"action": "LEFT"
+			},
+			{
+				"read": ".",
+				"to_state": "eraseone",
+				"write": ".",
+				"action": "LEFT"
 			}
 		],
 		"skip": [
 			{
+				"read": "+",
+				"to_state": "skip",
+				"write": "1",
+				"action": "RIGHT"
+			},
+			{
+				"read": "1",
+				"to_state": "skip",
+				"write": "1",
+				"action": "LEFT"
+			},
+			{
 				"read": ".",
 				"to_state": "HALT",
 				"write": ".",
-				"action": "LEFT"
+				"action": "RIGHT"
 			}
 		]
 	}
