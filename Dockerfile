@@ -9,9 +9,6 @@ RUN opam install -y ocamlfind
 
 COPY turing /home/opam/src
 
-#IDK WHY: ne fonctionne pas sur ma machine (j'utilise donc COPY)
-#VOLUME turing /home/opam/src
-
 WORKDIR /home/opam/src
 USER root
 RUN chown -R opam:opam /home/opam/src

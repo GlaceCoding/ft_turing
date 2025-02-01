@@ -13,10 +13,10 @@ build:
 	fi
 
 $(NAME): build
-	docker run -it $(NAME)
+	docker run -v ./turing:/home/opam/src -it $(NAME)
 
 run: build
-	docker run -it $(NAME) make run
+	docker run -v ./turing:/home/opam/src -it $(NAME) make run
 
 clean:
 	docker rmi -f $(NAME)
@@ -24,7 +24,6 @@ clean:
 fclean: clean
 	docker image prune -a
 	docker builder prune -a
-
 
 clean_docker:
 	docker rm -vf $(docker ps -aq)
