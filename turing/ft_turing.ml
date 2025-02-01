@@ -230,15 +230,20 @@ let check_json json argument =
 
 
 (* Fonction qui affiche le contenu de la bande *)
-let display_tape tape position =
-    Printf.printf "[";
-    for i = 0 to String.length tape - 1 do
-      if i = position then
-      Printf.printf "<%c>" tape.[i]
+let display_tape tape position blank =
+  Printf.printf "[";
+  let size = String.length tape in
+  for i = 0 to size do
+    let char = if i = size then blank else tape.[i] in
+    if i = position then
+      Printf.printf "<%c>" char
     else
-      Printf.printf "%c" tape.[i]
+      Printf.printf "%c" char
   done;
-  Printf.printf "...............] "
+  for _ = 1 to 22 - size do
+    Printf.printf "%c" blank 
+  done;
+  Printf.printf "] "
 
 (* Fonction qui affiche les instructions *)
 let display_transtion state transition =
@@ -315,7 +320,7 @@ let compute_turing_machine valid_setup argument =
         position + 1
       in
       (* Printf.printf "Position: %d\n" position; *)
-      display_tape tape position;
+      display_tape tape position blank;
       display_transtion state transition;
       compute_turing_machine_aux new_tape transition.to_state new_position
     with
