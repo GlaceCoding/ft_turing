@@ -338,11 +338,11 @@ let display_help () =
 (* Fonction principale *)
 let () =
 try
+  let args = Array.sub Sys.argv 1 (Array.length Sys.argv - 1) in
   if Array.length Sys.argv < 3 then
     raise (InvalidArgs "Missing argument")
-  else if
-    Sys.argv.(1) = "-h" || Sys.argv.(1) = "--help" then
-      display_help ()
+  else if Array.exists (fun arg -> arg = "-h" || arg = "--help") args then
+    display_help ()
   else
     let filename = Sys.argv.(1) in
     let argument = Str.split (Str.regexp "") Sys.argv.(2) in
