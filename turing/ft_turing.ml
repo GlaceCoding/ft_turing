@@ -261,7 +261,7 @@ let compute_turing_machine valid_setup argument =
   (* Printf.printf "tape length: %d\n" (String.length tape); *)
   (* Set pour stocker les configurations vues *)
   let seen_configs = Hashtbl.create 1024 in
-  let rec compute_turing_machine_aux inialTapeLength tape state position =
+  let rec compute_turing_machine_aux tape state position =
     (* Créer la configuration actuelle *)
     let current_config = {
       state = state;
@@ -273,10 +273,6 @@ let compute_turing_machine valid_setup argument =
       (* Printf.printf "position: %d\n" position; *)
       (* Vérifier si cette configuration a déjà été vue *)
       if Hashtbl.mem seen_configs current_config then
-        raise (InfinityLoop "Infinite loop detected!")
-      else if position >= inialTapeLength + 2 then
-        raise (InfinityLoop "Infinite loop detected!")
-      else if position <= -2 then
         raise (InfinityLoop "Infinite loop detected!")
       else
         (* Ajouter la configuration courante *)
@@ -321,13 +317,13 @@ let compute_turing_machine valid_setup argument =
       (* Printf.printf "Position: %d\n" position; *)
       display_tape tape position;
       display_transtion state transition;
-      compute_turing_machine_aux inialTapeLength new_tape transition.to_state new_position
+      compute_turing_machine_aux new_tape transition.to_state new_position
     with
     | Not_found ->
       raise ( MatchFailure (Printf.sprintf "%s n'a pas d'instruction pour %s" state current_symbol) );
   in
   let tape = String.concat "" argument in
-  compute_turing_machine_aux (String.length tape) tape initial 0
+  compute_turing_machine_aux tape initial 0
 
 let display_help () =
   Printf.printf "Usage: ./ft_turing [-h] jsonfile input\n\n";
